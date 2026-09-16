@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Tour - Địa danh - Lịch trình chi tiết</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #172033;
+            --muted: #64748b;
+            --line: #dbe4ef;
+            --blue: #1955d6;
+            --green: #078669;
+            --orange: #c45b12;
+            --red: #cf2e2e;
+            --soft-blue: #eef5ff;
+            --soft-green: #eafaf4;
+            --soft-orange: #fff6ec;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background:
+                radial-gradient(circle at top left, rgba(25, 85, 214, 0.14), transparent 32rem),
+                linear-gradient(180deg, #f8fbff 0%, #eef3f9 100%);
+            color: var(--ink);
+            font-family: 'Be Vietnam Pro', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .hero {
+            padding: 34px 0 22px;
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, #113b95 0%, #1955d6 56%, #0f766e 100%);
+            border-radius: 28px;
+            color: #fff;
+            overflow: hidden;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 24px 70px rgba(17, 59, 149, 0.22);
+        }
+
+        .hero-card::after {
+            content: '';
+            position: absolute;
+            right: -70px;
+            top: -90px;
+            width: 260px;
+            height: 260px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.13);
+        }
+
+        .teacher-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.16);
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        h1 {
+            margin: 16px 0 8px;
+            font-size: clamp(2rem, 4vw, 3.4rem);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+        }
+
+        .hero-text {
+            max-width: 760px;
+            color: rgba(255, 255, 255, 0.86);
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(219, 228, 239, 0.9);
+            border-radius: 22px;
+            box-shadow: 0 14px 45px rgba(22, 32, 51, 0.08);
+            margin-bottom: 22px;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--line);
+            background: linear-gradient(180deg, #ffffff, #f8fbff);
+        }
+
+        .panel-icon {
+            align-items: center;
+            border-radius: 14px;
+            display: inline-flex;
+            flex: 0 0 auto;
+            height: 42px;
+            justify-content: center;
+            width: 42px;
+        }
+
+        .panel-icon.blue { background: var(--soft-blue); color: var(--blue); }
+        .panel-icon.green { background: var(--soft-green); color: var(--green); }
+        .panel-icon.orange { background: var(--soft-orange); color: var(--orange); }
+
+        .panel-title {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 800;
+        }
+
+        .panel-subtitle {
+            color: var(--muted);
+            font-size: 0.82rem;
+            margin: 2px 0 0;
+        }
+
+        .panel-body { padding: 20px; }
+
+        label {
+            color: #354259;
+            font-size: 0.82rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .form-control, .form-select {
+            border-color: #cfdae8;
+            border-radius: 12px;
+            font-size: 0.92rem;
+            padding: 10px 12px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 0.18rem rgba(25, 85, 214, 0.13);
+        }
+
+        textarea.form-control {
+            min-height: 140px;
+        }
+
+        #itineraryJson {
+            font-family: Consolas, 'Courier New', monospace;
+            font-size: 0.82rem;
+            min-height: 520px;
+            white-space: pre;
+        }
+
+        .btn {
+            border-radius: 12px;
+            font-weight: 700;
+        }
+
+        .btn-teacher {
+            background: var(--blue);
+            border-color: var(--blue);
+            color: #fff;
+        }
+
+        .btn-teacher:hover { background: #123f9f; border-color: #123f9f; color: #fff; }
+
+        .btn-outline-teacher {
+            border-color: rgba(25, 85, 214, 0.35);
+            color: var(--blue);
+        }
+
+        .btn-outline-teacher:hover { background: var(--soft-blue); border-color: var(--blue); color: var(--blue); }
+
+        .result-box {
+            border-radius: 16px;
+            min-height: 94px;
+            padding: 15px;
+            border: 1px dashed #bdd0e6;
+            background: #f8fbff;
+            font-size: 0.92rem;
+            line-height: 1.7;
+        }
+
+        .result-box.success {
+            background: #ecfdf5;
+            border-color: #9ce2c7;
+            color: #075f4a;
+        }
+
+        .result-box.error {
+            background: #fff1f2;
+            border-color: #ffb7c0;
+            color: #9f1d2f;
+        }
+
+        .brochure-empty {
+            align-items: center;
+            border: 1px dashed #bdd0e6;
+            border-radius: 18px;
+            color: var(--muted);
+            display: flex;
+            justify-content: center;
+            min-height: 220px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .brochure-hero {
+            background: linear-gradient(135deg, #102c67, #1955d6);
+            border-radius: 20px;
+            color: #fff;
+            padding: 24px;
+        }
+
+        .brochure-hero h2 {
+            font-size: clamp(1.4rem, 3vw, 2.2rem);
+            font-weight: 800;
+            margin: 0 0 10px;
+        }
+
+        .metric {
+            background: rgba(255, 255, 255, 0.14);
+            border-radius: 14px;
+            padding: 12px;
+            min-height: 74px;
+        }
+
+        .metric small {
+            color: rgba(255, 255, 255, 0.72);
+            display: block;
+            font-size: 0.75rem;
+            margin-bottom: 4px;
+        }
+
+        .metric strong { font-size: 1rem; }
+
+        .location-badge {
+            align-items: center;
+            background: #e8f2ff;
+            border: 1px solid #c6dcff;
+            border-radius: 999px;
+            color: #184aa8;
+            display: inline-flex;
+            font-size: 0.82rem;
+            font-weight: 700;
+            gap: 6px;
+            margin: 4px 6px 4px 0;
+            padding: 8px 11px;
+        }
+
+        .day-card {
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            margin-top: 16px;
+            overflow: hidden;
+        }
+
+        .day-header {
+            background: #f7fbff;
+            border-bottom: 1px solid var(--line);
+            padding: 14px 16px;
+        }
+
+        .day-header h3 {
+            font-size: 1rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .hotel-line {
+            color: var(--muted);
+            font-size: 0.82rem;
+            margin-top: 4px;
+        }
+
+        .activity-row {
+            display: grid;
+            grid-template-columns: 96px 1fr;
+            gap: 12px;
+            padding: 14px 16px;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .activity-row:last-child { border-bottom: 0; }
+
+        .activity-time {
+            color: var(--blue);
+            font-weight: 800;
+        }
+
+        .activity-place {
+            color: var(--orange);
+            font-weight: 800;
+        }
+
+        .meal-badge {
+            background: #eafaf4;
+            border-radius: 999px;
+            color: var(--green);
+            display: inline-flex;
+            font-size: 0.76rem;
+            font-weight: 800;
+            margin-left: 6px;
+            padding: 4px 9px;
+        }
+
+        .helper-note {
+            color: var(--muted);
+            font-size: 0.82rem;
+            line-height: 1.65;
+        }
+
+        @media (max-width: 575.98px) {
+            .hero-card { padding: 22px; border-radius: 22px; }
+            .panel-body { padding: 16px; }
+            .activity-row { grid-template-columns: 1fr; gap: 4px; }
+        }
+
+        .itinerary-day {
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .itinerary-day-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f7fbff;
+            border-bottom: 1px solid var(--line);
+            padding: 12px 16px;
+        }
+
+        .itinerary-day-header h3 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .itinerary-day-body {
+            padding: 14px 16px;
+        }
+
+        .itinerary-activity {
+            display: grid;
+            grid-template-columns: 100px 1fr 1fr;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #edf2f7;
+            align-items: start;
+        }
+
+        .itinerary-activity:last-child {
+            border-bottom: 0;
+        }
+
+        .itinerary-activity .form-control,
+        .itinerary-activity .form-select {
+            font-size: 0.85rem;
+            padding: 7px 10px;
+        }
+
+        .itinerary-activity-label {
+            color: var(--muted);
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .itinerary-day-footer {
+            padding: 10px 16px;
+            border-top: 1px solid #edf2f7;
+        }
+
+        .btn-add {
+            border: 1px dashed var(--blue);
+            background: var(--soft-blue);
+            color: var(--blue);
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 12px;
+        }
+
+        .btn-add:hover {
+            background: #dde8ff;
+            border-color: var(--blue);
+            color: var(--blue);
+        }
+
+        .btn-remove {
+            border: none;
+            background: transparent;
+            color: var(--red);
+            font-size: 1.1rem;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+
+        .btn-remove:hover {
+            background: #fff1f2;
+        }
+
+        .btn-remove-day {
+            border: none;
+            background: transparent;
+            color: var(--red);
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        .btn-remove-day:hover {
+            text-decoration: underline;
+        }
+
+        .activity-row-full {
+            grid-column: 1 / -1;
+        }
+
+        .itinerary-empty {
+            text-align: center;
+            color: var(--muted);
+            padding: 30px;
+            border: 1px dashed #bdd0e6;
+            border-radius: 14px;
+        }
+
+        .btn-test-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-outline-danger.btn-sm {
+            font-size: 0.78rem;
+            padding: 5px 12px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header class="hero">
+        <div class="container">
+            <div class="hero-card">
+                <span class="teacher-pill"><i class="bi bi-mortarboard-fill"></i> Demo theo yêu cầu giáo viên</span>
+                <h1>Demo Tour - Địa danh - Lịch trình chi tiết</h1>
+                <p class="hero-text mb-0">
+                    Trang này minh họa đúng quan hệ Tour - Địa danh - Lịch trình chi tiết: tour phải khai báo danh sách địa danh chính thức, lịch trình từng ngày phải dùng đúng các địa danh đó, sau khi lưu có thể xem brochure tổng hợp.
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <main class="container pb-5">
+        <div class="row g-4 align-items-start">
+            <div class="col-xl-5">
+                <section id="tour-form-panel" class="panel">
+                    <div class="panel-header">
+                        <div class="panel-icon blue"><i class="bi bi-map-fill"></i></div>
+                        <div>
+                            <h2 class="panel-title">1. Thông tin tour và địa danh chính thức</h2>
+                            <p class="panel-subtitle">Dữ liệu sẽ được gửi vào bảng Tour và TourDiaDanh.</p>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <button type="button" class="btn btn-teacher" onclick="fillDaLatSample()">
+                                <i class="bi bi-magic me-1"></i>Mẫu Đà Lạt 3N2Đ
+                            </button>
+                            <button type="button" class="btn btn-teacher" onclick="fillNhaTrangSample()">
+                                <i class="bi bi-magic me-1"></i>Mẫu Nha Trang 4N3Đ
+                            </button>
+                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="makeMissingLocationSample()">
+                                <i class="bi bi-exclamation-triangle me-1"></i>Lỗi: thiếu địa danh
+                            </button>
+                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="makeWrongLocationSample()">
+                                <i class="bi bi-signpost-split me-1"></i>Lỗi: địa danh ngoài tour
+                            </button>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-5">
+                                <label for="tourCode">Mã tour</label>
+                                <input id="tourCode" class="form-control" placeholder="VD: TDL...">
+                            </div>
+                            <div class="col-md-7">
+                                <label for="tourName">Tên tour</label>
+                                <input id="tourName" class="form-control" placeholder="Tour Đà Lạt 3N2Đ">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="tourDuration">Thời lượng</label>
+                                <input id="tourDuration" class="form-control" placeholder="3 ngày 2 đêm">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="tourDays">Số ngày</label>
+                                <input id="tourDays" type="number" class="form-control" min="1" value="3">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="tourNights">Số đêm</label>
+                                <input id="tourNights" type="number" class="form-control" min="0" value="2">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="tourTransport">Phương tiện</label>
+                                <input id="tourTransport" class="form-control" placeholder="Xe du lịch 45 chỗ">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="tourType">Loại hình</label>
+                                <input id="tourType" class="form-control" placeholder="Nghỉ dưỡng - tham quan">
+                            </div>
+                            <div class="col-12">
+                                <label for="tourDescription">Mô tả tổng quan</label>
+                                <textarea id="tourDescription" class="form-control" rows="4" placeholder="Mô tả ngắn về hành trình..."></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="adultPrice">Giá người lớn</label>
+                                <input id="adultPrice" type="number" class="form-control" min="0" step="1000">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="childPrice">Giá trẻ em</label>
+                                <input id="childPrice" type="number" class="form-control" min="0" step="1000">
+                            </div>
+                            <div class="col-12">
+                                <label for="officialLocations">Địa danh chính thức của tour</label>
+                                <input id="officialLocations" class="form-control" placeholder="DD01,DD02,DD03,DD04">
+                                <div class="helper-note mt-2">
+                                    Giáo viên có thể kiểm tra ràng buộc: mỗi mã trong danh sách này phải xuất hiện ít nhất một lần trong lịch trình; lịch trình không được dùng mã ngoài danh sách.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-xl-7">
+                <section id="itinerary-form-panel" class="panel">
+                    <div class="panel-header">
+                        <div class="panel-icon green"><i class="bi bi-calendar2-week-fill"></i></div>
+                        <div>
+                            <h2 class="panel-title">2. Lịch trình chi tiết theo ngày</h2>
+                            <p class="panel-subtitle">Thêm ngày và hoạt động. Địa danh phải thuộc danh sách chính thức ở section 1.</p>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div id="itineraryContainer"></div>
+                        <button type="button" class="btn btn-add mt-2" onclick="addDay()">
+                            <i class="bi bi-plus-circle me-1"></i>Thêm ngày
+                        </button>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <section id="validation-panel" class="panel">
+            <div class="panel-header">
+                <div class="panel-icon orange"><i class="bi bi-shield-check"></i></div>
+                <div>
+                    <h2 class="panel-title">3. Lưu tour đầy đủ và xem kết quả kiểm tra</h2>
+                    <p class="panel-subtitle">POST /api/tours/full, hiển thị lỗi nếu thiếu địa danh hoặc dùng địa danh ngoài tour.</p>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+                    <button type="button" id="saveTourBtn" class="btn btn-success" onclick="saveFullTour()">
+                        <i class="bi bi-cloud-arrow-up-fill me-1"></i>Lưu tour đầy đủ
+                    </button>
+                </div>
+                <div id="validationResult" class="result-box">
+                    Chưa gửi dữ liệu. Bấm <strong>Điền mẫu Đà Lạt 3N2Đ</strong>, sau đó bấm <strong>Lưu tour đầy đủ</strong> để kiểm tra.
+                </div>
+            </div>
+        </section>
+
+        <section id="brochure-preview-panel" class="panel">
+            <div class="panel-header">
+                <div class="panel-icon blue"><i class="bi bi-journal-richtext"></i></div>
+                <div>
+                    <h2 class="panel-title">4. Brochure xem trước từ dữ liệu đã lưu</h2>
+                    <p class="panel-subtitle">Hiển thị tên tour, mô tả, giá, thời lượng, phương tiện, địa danh và hoạt động từng ngày.</p>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div id="brochurePreview" class="brochure-empty">
+                    Brochure sẽ xuất hiện tại đây sau khi lưu tour thành công.
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const API = '';
+        let isSaving = false;
+        let itineraryDays = [];
+
+        const sampleLocationNames = {
+            DD01: 'Đồi Cù',
+            DD02: 'Hồ Tuyền Lâm',
+            DD03: 'Vườn Hoa Thành Phố',
+            DD04: 'Dinh Bảo Đại',
+            DD05: 'Địa danh không thuộc tour'
+        };
+
+        const timeSlots = [
+            '06:00','06:30','07:00','07:30','08:00','08:30','09:00','09:30',
+            '10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30',
+            '14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30',
+            '18:00','18:30','19:00','19:30','20:00','20:30','21:00','21:30','22:00'
+        ];
+
+        const mealOptions = ['', 'Sáng', 'Trưa', 'Tối', 'Khác'];
+
+        function getOfficialLocations() {
+            return document.getElementById('officialLocations').value
+                .split(',')
+                .map(s => s.trim())
+                .filter(Boolean);
+        }
+
+        function escapeAttr(value) {
+            return String(value ?? '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('"', '&quot;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;');
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#039;');
+        }
+
+        function makeTourCode() {
+            return 'TDL' + Date.now().toString().slice(-9);
+        }
+
+        function renderItinerary() {
+            const container = document.getElementById('itineraryContainer');
+            const locations = getOfficialLocations();
+
+            if (itineraryDays.length === 0) {
+                container.innerHTML = '<div class="itinerary-empty"><i class="bi bi-calendar-x me-1"></i>Chưa có ngày nào. Bấm <strong>+ Thêm ngày</strong> để bắt đầu.</div>';
+                return;
+            }
+
+            container.innerHTML = itineraryDays.map((day, dayIndex) => {
+                const activitiesHtml = (day.activities || []).map((act, actIndex) => {
+                    const locationOptions = locations.map(loc =>
+                        `<option value="${escapeAttr(loc)}" ${act.maDiaDanh === loc ? 'selected' : ''}>${escapeAttr(loc)}${sampleLocationNames[loc] ? ' - ' + sampleLocationNames[loc] : ''}</option>`
+                    ).join('');
+
+                    const timeOptions = timeSlots.map(t =>
+                        `<option value="${escapeAttr(t)}" ${act.khungGio === t ? 'selected' : ''}>${escapeAttr(t)}</option>`
+                    ).join('');
+
+                    const mealOptionsHtml = mealOptions.map(m =>
+                        `<option value="${escapeAttr(m)}" ${act.buaAn === m ? 'selected' : ''}>${m || '-- Chọn --'}</option>`
+                    ).join('');
+
+                    return `
+                        <div class="itinerary-activity">
+                            <div>
+                                <div class="itinerary-activity-label">Giờ</div>
+                                <select class="form-select" onchange="updateActivity(${dayIndex},${actIndex},'khungGio',this.value)">
+                                    <option value="">-- Chọn --</option>
+                                    ${timeOptions}
+                                </select>
+                            </div>
+                            <div>
+                                <div class="itinerary-activity-label">Địa danh</div>
+                                <select class="form-select" onchange="updateActivity(${dayIndex},${actIndex},'maDiaDanh',this.value)">
+                                    <option value="">-- Không có --</option>
+                                    ${locationOptions}
+                                </select>
+                            </div>
+                            <div>
+                                <div class="itinerary-activity-label">Bữa ăn</div>
+                                <select class="form-select" onchange="updateActivity(${dayIndex},${actIndex},'buaAn',this.value)">
+                                    ${mealOptionsHtml}
+                                </select>
+                            </div>
+                            <div class="activity-row-full">
+                                <div class="itinerary-activity-label">Nội dung hoạt động</div>
+                                <div class="d-flex gap-2">
+                                    <input type="text" class="form-control" value="${escapeAttr(act.noiDungHoatDong)}"
+                                        placeholder="Mô tả hoạt động..."
+                                        oninput="updateActivity(${dayIndex},${actIndex},'noiDungHoatDong',this.value)">
+                                    <button type="button" class="btn-remove" onclick="removeActivity(${dayIndex},${actIndex})" title="Xóa hoạt động">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="itinerary-day">
+                        <div class="itinerary-day-header">
+                            <h3><i class="bi bi-calendar-event me-1"></i>Ngày ${day.soThuTuNgay}</h3>
+                            <button type="button" class="btn-remove-day" onclick="removeDay(${dayIndex})">
+                                <i class="bi bi-x-lg me-1"></i>Xóa ngày
+                            </button>
+                        </div>
+                        <div class="itinerary-day-body">
+                            <div class="row g-2 mb-3">
+                                <div class="col-md-8">
+                                    <div class="itinerary-activity-label">Tiêu đề ngày</div>
+                                    <input type="text" class="form-control" value="${escapeAttr(day.tieuDeNgay)}"
+                                        placeholder="VD: Ngày 1: TP.HCM - Đà Lạt - Đồi Cù"
+                                        oninput="updateDay(${dayIndex},'tieuDeNgay',this.value)">
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="itinerary-activity-label">Khách sạn</div>
+                                    <input type="text" class="form-control" value="${escapeAttr(day.khachSan)}"
+                                        placeholder="Tên khách sạn (tùy chọn)"
+                                        oninput="updateDay(${dayIndex},'khachSan',this.value)">
+                                </div>
+                            </div>
+                            ${activitiesHtml || '<div class="itinerary-empty" style="padding:16px"><i class="bi bi-list-check me-1"></i>Chưa có hoạt động nào.</div>'}
+                        </div>
+                        <div class="itinerary-day-footer">
+                            <button type="button" class="btn btn-add btn-sm" onclick="addActivity(${dayIndex})">
+                                <i class="bi bi-plus-circle me-1"></i>Thêm hoạt động
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function addDay() {
+            const nextDay = itineraryDays.length + 1;
+            itineraryDays.push({
+                soThuTuNgay: nextDay,
+                tieuDeNgay: '',
+                khachSan: '',
+                activities: []
+            });
+            renderItinerary();
+        }
+
+        function removeDay(dayIndex) {
+            itineraryDays.splice(dayIndex, 1);
+            itineraryDays.forEach((day, i) => day.soThuTuNgay = i + 1);
+            renderItinerary();
+        }
+
+        function addActivity(dayIndex) {
+            itineraryDays[dayIndex].activities.push({
+                khungGio: '',
+                maDiaDanh: '',
+                noiDungHoatDong: '',
+                buaAn: ''
+            });
+            renderItinerary();
+        }
+
+        function removeActivity(dayIndex, actIndex) {
+            itineraryDays[dayIndex].activities.splice(actIndex, 1);
+            renderItinerary();
+        }
+
+        function updateDay(dayIndex, field, value) {
+            itineraryDays[dayIndex][field] = value;
+        }
+
+        function updateActivity(dayIndex, actIndex, field, value) {
+            itineraryDays[dayIndex].activities[actIndex][field] = value;
+        }
+
+        function fillDaLatSample() {
+            const maTour = makeTourCode();
+            document.getElementById('tourCode').value = maTour;
+            document.getElementById('tourName').value = 'Tour Đà Lạt 3N2Đ';
+            document.getElementById('tourDuration').value = '3 ngày 2 đêm';
+            document.getElementById('tourDays').value = '3';
+            document.getElementById('tourNights').value = '2';
+            document.getElementById('tourTransport').value = 'Xe du lịch 45 chỗ';
+            document.getElementById('tourType').value = 'Tham quan - học tập thực tế';
+            document.getElementById('tourDescription').value = 'Hành trình Đà Lạt 3 ngày 2 đêm dùng để minh họa ràng buộc giữa Tour, Địa danh và Lịch trình chi tiết. Mỗi địa danh chính thức của tour phải được sử dụng trong lịch trình và hoạt động không được tham chiếu địa danh ngoài tour.';
+            document.getElementById('adultPrice').value = '3500000';
+            document.getElementById('childPrice').value = '2500000';
+            document.getElementById('officialLocations').value = 'DD01,DD02,DD03,DD04';
+
+            itineraryDays = [
+                {
+                    soThuTuNgay: 1,
+                    tieuDeNgay: 'Ngày 1: TP.HCM - Đà Lạt - Đồi Cù',
+                    khachSan: 'Khách sạn trung tâm Đà Lạt',
+                    activities: [
+                        { khungGio: '06:00', maDiaDanh: '', noiDungHoatDong: 'Tập trung tại trường, điểm danh đoàn và khởi hành đi Đà Lạt.', buaAn: 'Sáng' },
+                        { khungGio: '11:30', maDiaDanh: '', noiDungHoatDong: 'Dùng bữa trưa, nghe hướng dẫn viên giới thiệu tổng quan tuyến điểm.', buaAn: 'Trưa' },
+                        { khungGio: '15:00', maDiaDanh: 'DD01', noiDungHoatDong: 'Tham quan Đồi Cù, ghi nhận vai trò cảnh quan xanh trong sản phẩm du lịch Đà Lạt.', buaAn: '' },
+                        { khungGio: '18:30', maDiaDanh: '', noiDungHoatDong: 'Ăn tối và nhận phòng khách sạn.', buaAn: 'Tối' }
+                    ]
+                },
+                {
+                    soThuTuNgay: 2,
+                    tieuDeNgay: 'Ngày 2: Hồ Tuyền Lâm - Vườn Hoa Thành Phố',
+                    khachSan: 'Khách sạn trung tâm Đà Lạt',
+                    activities: [
+                        { khungGio: '07:00', maDiaDanh: '', noiDungHoatDong: 'Ăn sáng tại khách sạn và phổ biến mục tiêu học tập trong ngày.', buaAn: 'Sáng' },
+                        { khungGio: '08:30', maDiaDanh: 'DD02', noiDungHoatDong: 'Tham quan Hồ Tuyền Lâm, quan sát cảnh quan mặt nước và cách tổ chức tuyến tham quan nghỉ dưỡng.', buaAn: '' },
+                        { khungGio: '12:00', maDiaDanh: '', noiDungHoatDong: 'Dùng bữa trưa theo thực đơn địa phương.', buaAn: 'Trưa' },
+                        { khungGio: '14:00', maDiaDanh: 'DD03', noiDungHoatDong: 'Khảo sát Vườn Hoa Thành Phố, phân tích cách khai thác tài nguyên hoa trong tour Đà Lạt.', buaAn: '' },
+                        { khungGio: '18:30', maDiaDanh: '', noiDungHoatDong: 'Ăn tối, sinh hoạt nhóm và tổng kết ngày.', buaAn: 'Tối' }
+                    ]
+                },
+                {
+                    soThuTuNgay: 3,
+                    tieuDeNgay: 'Ngày 3: Dinh Bảo Đại - Mua đặc sản - TP.HCM',
+                    khachSan: '',
+                    activities: [
+                        { khungGio: '07:00', maDiaDanh: '', noiDungHoatDong: 'Ăn sáng, trả phòng khách sạn.', buaAn: 'Sáng' },
+                        { khungGio: '08:30', maDiaDanh: 'DD04', noiDungHoatDong: 'Tham quan Dinh Bảo Đại, tìm hiểu giá trị lịch sử và cách đưa di sản vào lịch trình.', buaAn: '' },
+                        { khungGio: '11:30', maDiaDanh: '', noiDungHoatDong: 'Dùng bữa trưa, mua đặc sản làm quà.', buaAn: 'Trưa' },
+                        { khungGio: '13:30', maDiaDanh: '', noiDungHoatDong: 'Khởi hành về TP.HCM, kết thúc tour Đà Lạt 3 ngày 2 đêm.', buaAn: '' }
+                    ]
+                }
+            ];
+
+            renderItinerary();
+            renderInfo('Đã điền mẫu hợp lệ. Lịch trình hiện dùng đủ DD01, DD02, DD03, DD04 ít nhất một lần.');
+            document.getElementById('brochurePreview').className = 'brochure-empty';
+            document.getElementById('brochurePreview').innerHTML = 'Brochure sẽ xuất hiện tại đây sau khi lưu tour thành công.';
+        }
+
+        function fillNhaTrangSample() {
+            const maTour = 'TNT' + Date.now().toString().slice(-9);
+            document.getElementById('tourCode').value = maTour;
+            document.getElementById('tourName').value = 'Tour Nha Trang 4N3Đ';
+            document.getElementById('tourDuration').value = '4 ngày 3 đêm';
+            document.getElementById('tourDays').value = '4';
+            document.getElementById('tourNights').value = '3';
+            document.getElementById('tourTransport').value = 'Xe du lịch 45 chỗ';
+            document.getElementById('tourType').value = 'Biển đảo - tham quan';
+            document.getElementById('tourDescription').value = 'Hành trình Nha Trang 4 ngày 3 đêm khám phá biển đảo, tháp chàm Po Nagar và vui chơi sunscreen park.';
+            document.getElementById('adultPrice').value = '4500000';
+            document.getElementById('childPrice').value = '3200000';
+            document.getElementById('officialLocations').value = 'DD10,DD11,DD12,DD13';
+
+            itineraryDays = [
+                {
+                    soThuTuNgay: 1,
+                    tieuDeNgay: 'Ngày 1: TP.HCM - Nha Trang - Bãi Dài',
+                    khachSan: 'Khách sạn biển Nha Trang',
+                    activities: [
+                        { khungGio: '05:30', maDiaDanh: '', noiDungHoatDong: 'Tập trung tại trường, khởi hành đi Nha Trang.', buaAn: 'Sáng' },
+                        { khungGio: '12:00', maDiaDanh: '', noiDungHoatDong: 'Dùng bữa trưa tại quán ven đường, nhận phòng khách sạn.', buaAn: 'Trưa' },
+                        { khungGio: '14:00', maDiaDanh: 'DD10', noiDungHoatDong: 'Tham quan Bãi Dài, tắm biển và thưởng thức hải sản tươi sống.', buaAn: '' },
+                        { khungGio: '18:30', maDiaDanh: '', noiDungHoatDong: 'Ăn tối, dạo phố đêm Nha Trang.', buaAn: 'Tối' }
+                    ]
+                },
+                {
+                    soThuTuNgay: 2,
+                    tieuDeNgay: 'Ngày 2: Tháp Po Nagar - Chùa Long Sơn',
+                    khachSan: 'Khách sạn biển Nha Trang',
+                    activities: [
+                        { khungGio: '07:00', maDiaDanh: '', noiDungHoatDong: 'Ăn sáng tại khách sạn.', buaAn: 'Sáng' },
+                        { khungGio: '08:30', maDiaDanh: 'DD11', noiDungHoatDong: 'Tham quan Tháp Po Nagar, tìm hiểu văn hóa Chăm Pa và kiến trúc tháp cổ.', buaAn: '' },
+                        { khungGio: '11:00', maDiaDanh: 'DD12', noiDungHoatDong: 'Viếng chùa Long Sơn, chiêm ngưỡng tượng Phật trắng lớn nhất Việt Nam.', buaAn: '' },
+                        { khungGio: '12:00', maDiaDanh: '', noiDungHoatDong: 'Dùng bữa trưa.', buaAn: 'Trưa' },
+                        { khungGio: '14:00', maDiaDanh: '', noiDungHoatDong: 'Tự do nghỉ ngơi, tắm hồ bơi khách sạn.', buaAn: '' },
+                        { khungGio: '18:30', maDiaDanh: '', noiDungHoatDong: 'Ăn tối, sinh hoạt nhóm.', buaAn: 'Tối' }
+                    ]
+                },
+                {
+                    soThuTuNgay: 3,
+                    tieuDeNgay: 'Ngày 3: Hòn Tằm - Sun World',
+                    khachSan: 'Khách sạn biển Nha Trang',
+                    activities: [
+                        { khungGio: '07:00', maDiaDanh: '', noiDungHoatDong: 'Ăn sáng, chuẩn bị đồ bơi.', buaAn: 'Sáng' },
+                        { khungGio: '08:30', maDiaDanh: 'DD13', noiDungHoatDong: 'Di chuyển đến Hòn Tằm, vui chơi Sun World với các trò cảm giác mạnh và bãi biển riêng.', buaAn: '' },
+                        { khungGio: '12:00', maDiaDanh: '', noiDungHoatDong: 'Ăn trưa tại đảo.', buaAn: 'Trưa' },
+                        { khungGio: '14:00', maDiaDanh: '', noiDungHoatDong: 'Lặn ngắm san hô, chèo kayak.', buaAn: '' },
+                        { khungGio: '17:00', maDiaDanh: '', noiDungHoatDong: 'Về lại khách sạn, nghỉ ngơi.', buaAn: '' },
+                        { khungGio: '18:30', maDiaDanh: '', noiDungHoatDong: 'Ăn tối, tiệc hải sản bãi biển.', buaAn: 'Tối' }
+                    ]
+                },
+                {
+                    soThuTuNgay: 4,
+                    tieuDeNgay: 'Ngày 4: Mua đặc sản - TP.HCM',
+                    khachSan: '',
+                    activities: [
+                        { khungGio: '07:00', maDiaDanh: '', noiDungHoatDong: 'Ăn sáng, trả phòng khách sạn.', buaAn: 'Sáng' },
+                        { khungGio: '09:00', maDiaDanh: '', noiDungHoatDong: 'Mua đặc sản Nha Trang: nem chua, mực một nắng, yến sào.', buaAn: '' },
+                        { khungGio: '11:00', maDiaDanh: '', noiDungHoatDong: 'Dùng bữa trưa rồi khởi hành về TP.HCM.', buaAn: 'Trưa' },
+                        { khungGio: '17:00', maDiaDanh: '', noiDungHoatDong: 'Về đến TP.HCM, kết thúc tour.', buaAn: '' }
+                    ]
+                }
+            ];
+
+            renderItinerary();
+            renderInfo('Đã điền mẫu Nha Trang 4N3Đ. Lịch trình dùng đủ DD10, DD11, DD12, DD13.');
+            document.getElementById('brochurePreview').className = 'brochure-empty';
+            document.getElementById('brochurePreview').innerHTML = 'Brochure sẽ xuất hiện tại đây sau khi lưu tour thành công.';
+        }
+
+        function makeMissingLocationSample() {
+            fillDaLatSample();
+            itineraryDays.forEach(day => {
+                day.activities = day.activities.filter(act => act.maDiaDanh !== 'DD04');
+            });
+            renderItinerary();
+            renderInfo('Đã tạo mẫu lỗi: DD04 vẫn thuộc danh sách địa danh chính thức nhưng đã bị xóa khỏi lịch trình.');
+        }
+
+        function makeWrongLocationSample() {
+            fillDaLatSample();
+            const firstActivityWithLocation = itineraryDays[0].activities.find(act => act.maDiaDanh === 'DD01');
+            if (firstActivityWithLocation) firstActivityWithLocation.maDiaDanh = 'DD05';
+            renderItinerary();
+            renderInfo('Đã tạo mẫu lỗi: một hoạt động dùng DD05, nhưng DD05 không thuộc danh sách địa danh chính thức của tour.');
+        }
+
+        function buildPayload() {
+            const maTour = document.getElementById('tourCode').value.trim();
+            const locations = document.getElementById('officialLocations').value
+                .split(',')
+                .map(item => item.trim())
+                .filter(Boolean)
+                .map((maDiaDanh, index) => ({ maDiaDanh, thuTuThamQuan: index + 1 }));
+
+            return {
+                maTour,
+                tenTour: document.getElementById('tourName').value.trim(),
+                thoiLuong: document.getElementById('tourDuration').value.trim(),
+                soNgay: Number(document.getElementById('tourDays').value),
+                soDem: Number(document.getElementById('tourNights').value),
+                phuongTien: document.getElementById('tourTransport').value.trim() || null,
+                loaiHinh: document.getElementById('tourType').value.trim() || null,
+                moTa: document.getElementById('tourDescription').value.trim() || null,
+                giaNguoiLon: Number(document.getElementById('adultPrice').value),
+                giaTreEm: Number(document.getElementById('childPrice').value),
+                diaDanh: locations,
+                days: itineraryDays.map(day => ({
+                    maLichTrinh: maTour + '_N' + day.soThuTuNgay,
+                    soThuTuNgay: day.soThuTuNgay,
+                    tieuDeNgay: day.tieuDeNgay,
+                    khachSan: day.khachSan || null,
+                    activities: day.activities.map(act => ({
+                        khungGio: act.khungGio,
+                        maDiaDanh: act.maDiaDanh || null,
+                        noiDungHoatDong: act.noiDungHoatDong,
+                        buaAn: act.buaAn || null
+                    }))
+                }))
+            };
+        }
+
+        async function saveFullTour() {
+            if (isSaving) return;
+
+            let payload;
+            try {
+                payload = buildPayload();
+            } catch (error) {
+                renderErrors(['Lỗi xây dựng dữ liệu: ' + error.message]);
+                return;
+            }
+
+            if (!payload.maTour || !payload.tenTour || !payload.thoiLuong) {
+                renderErrors(['Vui lòng nhập mã tour, tên tour và thời lượng trước khi lưu.']);
+                return;
+            }
+
+            if (itineraryDays.length === 0) {
+                renderErrors(['Vui lòng thêm ít nhất một ngày vào lịch trình.']);
+                return;
+            }
+
+            renderInfo('Đang gửi dữ liệu đến /api/tours/full ...');
+            isSaving = true;
+            setSaveButtonState(true);
+
+            try {
+                const response = await fetch(API + '/api/tours/full', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await readJson(response);
+                if (!response.ok) {
+                    renderErrors(normalizeErrors(data));
+                    return;
+                }
+
+                renderSuccess(`${data.message || 'Tạo tour đầy đủ thành công!'} Mã tour: ${payload.maTour}`);
+                await loadBrochure(payload.maTour);
+            } catch (error) {
+                renderErrors(['Không gọi được API: ' + error.message]);
+            } finally {
+                isSaving = false;
+                setSaveButtonState(false);
+            }
+        }
+
+        async function loadBrochure(maTour) {
+            const preview = document.getElementById('brochurePreview');
+            preview.className = '';
+            preview.innerHTML = '<div class="brochure-empty">Đang tải brochure từ /api/tours/' + escapeHtml(maTour) + '/brochure ...</div>';
+
+            try {
+                const response = await fetch(API + '/api/tours/' + encodeURIComponent(maTour) + '/brochure');
+                const data = await readJson(response);
+                if (!response.ok) {
+                    preview.className = 'brochure-empty';
+                    preview.innerHTML = 'Không tải được brochure cho tour ' + escapeHtml(maTour) + '.';
+                    return;
+                }
+
+                preview.className = '';
+                preview.innerHTML = renderBrochure(data);
+            } catch (error) {
+                preview.className = 'brochure-empty';
+                preview.innerHTML = 'Không gọi được API brochure: ' + escapeHtml(error.message);
+            }
+        }
+
+        function renderBrochure(data) {
+            const tour = data.tour || {};
+            const locations = data.locations || [];
+            const days = data.days || [];
+            const activities = data.activities || [];
+            const price = formatCurrency(tour.giaNguoiLon) + ' / người lớn';
+            const childPrice = formatCurrency(tour.giaTreEm) + ' / trẻ em';
+            const locationHtml = locations.map(location => `
+                <span class="location-badge">
+                    <i class="bi bi-geo-alt-fill"></i>${escapeHtml(location.maDiaDanh)} - ${escapeHtml(location.tenDiaDanh || sampleLocationNames[location.maDiaDanh] || '')}
+                </span>
+            `).join('') || '<span class="text-muted">Chưa có địa danh.</span>';
+
+            const dayHtml = days.map(day => {
+                const dayActivities = activities.filter(activity => String(activity.maLichTrinh) === String(day.maLichTrinh));
+                const activitiesHtml = dayActivities.map(activity => `
+                    <div class="activity-row">
+                        <div class="activity-time">${escapeHtml(activity.khungGio || '')}</div>
+                        <div>
+                            ${activity.tenDiaDanh ? `<span class="activity-place"><i class="bi bi-pin-map-fill me-1"></i>${escapeHtml(activity.tenDiaDanh)}</span>` : ''}
+                            ${activity.buaAn ? `<span class="meal-badge"><i class="bi bi-cup-hot me-1"></i>${escapeHtml(activity.buaAn)}</span>` : ''}
+                            <div class="mt-1">${escapeHtml(activity.noiDung || '')}</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                return `
+                    <article class="day-card">
+                        <div class="day-header">
+                            <h3>${escapeHtml(day.tieuDeNgay || 'Ngày ' + day.soThuTuNgay)}</h3>
+                            ${day.khachSan ? `<div class="hotel-line"><i class="bi bi-building me-1"></i>Khách sạn: ${escapeHtml(day.khachSan)}</div>` : ''}
+                        </div>
+                        <div>${activitiesHtml || '<div class="p-3 text-muted">Chưa có hoạt động.</div>'}</div>
+                    </article>
+                `;
+            }).join('');
+
+            return `
+                <div class="brochure-hero mb-4">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-lg-7">
+                            <div class="teacher-pill mb-3"><i class="bi bi-stars"></i> Brochure tour đã lưu</div>
+                            <h2>${escapeHtml(tour.tenTour || '')}</h2>
+                            <p class="mb-0">${escapeHtml(tour.moTa || '')}</p>
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="row g-2">
+                                <div class="col-6"><div class="metric"><small>Giá</small><strong>${price}</strong><br><small>${childPrice}</small></div></div>
+                                <div class="col-6"><div class="metric"><small>Thời lượng</small><strong>${escapeHtml(tour.thoiLuong || '')}</strong></div></div>
+                                <div class="col-6"><div class="metric"><small>Phương tiện</small><strong>${escapeHtml(tour.phuongTien || '')}</strong></div></div>
+                                <div class="col-6"><div class="metric"><small>Loại hình</small><strong>${escapeHtml(tour.loaiHinh || '')}</strong></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h3 class="h6 fw-bold mb-2">Địa danh chính thức</h3>
+                <div class="mb-3">${locationHtml}</div>
+                <h3 class="h6 fw-bold mb-0">Lịch trình chi tiết</h3>
+                ${dayHtml || '<div class="brochure-empty mt-3">Chưa có lịch trình.</div>'}
+            `;
+        }
+
+        async function readJson(response) {
+            const text = await response.text();
+            if (!text) return {};
+            try { return JSON.parse(text); }
+            catch { return { message: text }; }
+        }
+
+        function normalizeErrors(data) {
+            if (Array.isArray(data?.errors)) return data.errors;
+            if (data?.message) return [data.message];
+            return ['API từ chối dữ liệu nhưng không trả về chi tiết lỗi.'];
+        }
+
+        function renderInfo(message) {
+            const result = document.getElementById('validationResult');
+            result.className = 'result-box';
+            result.innerHTML = `<i class="bi bi-info-circle me-1"></i>${escapeHtml(message)}`;
+        }
+
+        function renderSuccess(message) {
+            const result = document.getElementById('validationResult');
+            result.className = 'result-box success';
+            result.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i><strong>Thành công:</strong> ${escapeHtml(message)}`;
+        }
+
+        function renderErrors(errors) {
+            markInvalidBrochure();
+            const result = document.getElementById('validationResult');
+            result.className = 'result-box error';
+            result.innerHTML = '<strong><i class="bi bi-x-circle-fill me-1"></i>Lỗi kiểm tra dữ liệu:</strong><ul class="mb-0 mt-2">' +
+                errors.map(error => `<li>${escapeHtml(error)}</li>`).join('') +
+                '</ul>';
+        }
+
+        function markInvalidBrochure() {
+            const preview = document.getElementById('brochurePreview');
+            preview.className = 'brochure-empty';
+            preview.innerHTML = 'Chưa có brochure hợp lệ cho dữ liệu hiện tại.';
+        }
+
+        function setSaveButtonState(disabled) {
+            const button = document.getElementById('saveTourBtn');
+            if (!button) return;
+            button.disabled = disabled;
+            button.innerHTML = disabled
+                ? '<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>Đang lưu...'
+                : '<i class="bi bi-cloud-arrow-up-fill me-1"></i>Lưu tour đầy đủ';
+        }
+
+        function formatCurrency(value) {
+            return Number(value || 0).toLocaleString('vi-VN') + ' VNĐ';
+        }
+
+        document.getElementById('officialLocations').addEventListener('input', () => renderItinerary());
+        fillDaLatSample();
+    </script>
+</body>
+</html>
