@@ -24,7 +24,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Cấu hình SQL Server - CHỈNH CHO PHÙ HỢP VỚI MÁY BẠN
 string connectionString = builder.Configuration.GetConnectionString("Default")
-    ?? "Server=.\\SQLEXPRESS;Database=TourManagement;Trusted_Connection=True;TrustServerCertificate=True;Encrypt=False;";
+    ?? "Server=YOUR_SERVER;Database=TourManagement;Trusted_Connection=True;TrustServerCertificate=True;Encrypt=False;";
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
